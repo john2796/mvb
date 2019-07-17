@@ -12,6 +12,15 @@ cloudinary.config({
   api_secret: 'nKC01YmIE-tSDADn4YdxiSYpj1Q',
 })
 
+server.get('/image', async (req, res) => {
+  try {
+    const images = await db.select().from('images')
+    res.status(200).json({ images })
+  } catch ({ message }) {
+    res.status(500).json({ message })
+  }
+})
+
 server.post('/image', multipart, (req, res) => {
   const { userId } = req.body
 
@@ -29,8 +38,8 @@ server.post('/image', multipart, (req, res) => {
             .first()
           res.status(201).json({ id: image.id })
         }
-      } catch (err) {
-        res.status(500).json({ message: err })
+      } catch ({ message }) {
+        res.status(500).json({ message })
       }
     }
   })
