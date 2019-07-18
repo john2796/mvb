@@ -2,9 +2,11 @@ const server = require('express').Router()
 const db = require('../data/dbConfig')
 const { authenticate } = require('../common/authentication')
 
-// @route    /api//user/getAll
+// ------------------------------------------------------------
+// @route    /api/user/getAll
 // @desc     GET ALL user
 // @Access   Public
+// ------------------------------------------------------------
 server.get('/All', async (req, res) => {
   try {
     // get user
@@ -34,9 +36,12 @@ server.get('/All', async (req, res) => {
   }
 })
 
+// ------------------------------------------------------------
 // @route    /api/user
-// @desc     GET user by
-// @Access   Public
+// @desc     GET user account
+// @Access   private
+// ------------------------------------------------------------
+// once you login and sent back token in the header for privates routes i will be able to decode those payload and use the id to find your account response with right data
 server.get('/', authenticate, async (req, res) => {
   const { id } = req.decoded.user
   try {
@@ -67,5 +72,11 @@ server.get('/', authenticate, async (req, res) => {
     res.status(500).json({ message })
   }
 })
+
+//-----------------------------------------------------------
+// @route    /api/user
+// @desc     DELETE account only owner should be able to do this
+// @Access   Private
+//-----------------------------------------------------------
 
 module.exports = server

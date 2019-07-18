@@ -13,17 +13,24 @@ cloudinary.config({
   api_key: '266536395857977',
   api_secret: 'nKC01YmIE-tSDADn4YdxiSYpj1Q',
 })
-
+// ------------------------------------------------------------
+// @route    /api/upload
+// @desc     For Testing
+// @Access   Public
+// ------------------------------------------------------------
 server.get('/image', authenticate, async (req, res) => {
   try {
-    console.log(req.decoded)
     const images = await db.select().from('images')
     res.status(200).json({ images })
   } catch ({ message }) {
     res.status(500).json({ message })
   }
 })
-
+// ------------------------------------------------------------
+// @route    /api/upload/image
+// @desc     POST Image
+// @Access   Private
+// ------------------------------------------------------------
 server.post('/image', authenticate, multipart, (req, res) => {
   //  url, user_id
   const { id } = req.decoded.user
