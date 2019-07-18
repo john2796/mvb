@@ -2,6 +2,8 @@ const express = require('express')
 const cloudinary = require('cloudinary')
 const multipart = require('connect-multiparty')()
 
+const { authenticate } = require('../common/authentication.js')
+
 const db = require('../data/dbConfig')
 
 const server = express.Router()
@@ -12,8 +14,9 @@ cloudinary.config({
   api_secret: 'nKC01YmIE-tSDADn4YdxiSYpj1Q',
 })
 
-server.get('/image', async (req, res) => {
+server.get('/image', authenticate, async (req, res) => {
   try {
+    console.log(req.decoded)
     const images = await db.select().from('images')
     res.status(200).json({ images })
   } catch ({ message }) {
@@ -21,23 +24,28 @@ server.get('/image', async (req, res) => {
   }
 })
 
-server.post('/image', multipart, (req, res) => {
-  const { userId } = req.body
-
-  cloudinary.v2.uploader.upload(req.files.image.path, async (error, result) => {
+server.post('/image', authenticate, multipart, (req, res) => {
+  //  url, user_id
+  const { id } = req.decoded.user
+  // call cloudinary upload func
+  cloudinary.v2.uploader.upload(req.files.url.path, async (error, result) => {
+    // if there's error return message
     if (error) {
       res.status(500).json({ message: 'Upload failed' })
     } else {
       try {
-        if (!userId) {
-          await db.insert({ url: result.url }).into('images')
-          const image = await db
-            .select()
-            .from('images')
-            .where({ url: result.url })
-            .first()
-          res.status(201).json({ id: image.id })
-        }
+        // add image
+        await db.insert({ url: result.url, user_id: id }).into('images')
+        // grab image data
+        const image = await db
+          .select()
+          .from('images')
+          .where({ url: result.url })
+          .first()
+        // response with new image
+        res.status(201).json({ image })
+
+        // handle error messages
       } catch ({ message }) {
         res.status(500).json({ message })
       }

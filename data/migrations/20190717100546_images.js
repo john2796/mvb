@@ -8,4 +8,6 @@ exports.up = knex => knex.schema.createTable('images', (tbl) => {
   tbl.string('url').notNullable()
 })
 
+//  url, user_id
+
 exports.down = knex => knex.schema.dropTableIfExists('images')
