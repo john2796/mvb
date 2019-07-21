@@ -78,5 +78,12 @@ server.get('/', authenticate, async (req, res) => {
 // @desc     DELETE account only owner should be able to do this
 // @Access   Private
 //-----------------------------------------------------------
+server.delete('/', async (req, res) => {
+  try {
+    const deleted = await db.remove().into('users')
+  } catch ({ message }) {
+    res.status(500).json({ message })
+  }
+})
 
 module.exports = server
