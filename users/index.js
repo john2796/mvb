@@ -78,9 +78,17 @@ server.get('/', authenticate, async (req, res) => {
 // @desc     DELETE account only owner should be able to do this
 // @Access   Private
 //-----------------------------------------------------------
-server.delete('/', async (req, res) => {
+server.delete('/', authenticate, async (req, res) => {
+  const { id } = req.decoded.user
+  if (!id) {
+    return res.status(400).json({ message: 'User with that id is not found' })
+  }
   try {
-    const deleted = await db.remove().into('users')
+    await db
+      .delete()
+      .from('users')
+      .where({ id })
+    res.status(204)
   } catch ({ message }) {
     res.status(500).json({ message })
   }
