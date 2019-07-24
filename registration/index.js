@@ -19,9 +19,7 @@ const server = express.Router()
 7. handle erros
  */
 server.post('/register', async (req, res) => {
-  const {
-    username, email, firstname, lastname,
-  } = req.body
+  const { username } = req.body
   let { password } = req.body
 
   // Validate user
@@ -30,15 +28,6 @@ server.post('/register', async (req, res) => {
   }
   if (!password) {
     return res.status(400).json({ message: 'no password provided' })
-  }
-  if (!email) {
-    return res.status(400).json({ message: 'no email provided' })
-  }
-  if (!firstname) {
-    return res.status(400).json({ message: 'no firstname provided' })
-  }
-  if (!lastname) {
-    return res.status(400).json({ message: 'no lastname provided' })
   }
 
   try {
@@ -50,15 +39,12 @@ server.post('/register', async (req, res) => {
       .insert({
         username,
         password,
-        email,
-        firstname,
-        lastname,
       })
       .into('users')
 
     // get user
     const user = await db
-      .select('u.username', 'u.id', 'u.firstname', 'u.lastname')
+      .select()
       .from('users as u')
       .where('u.username', username)
       .first()
@@ -67,11 +53,7 @@ server.post('/register', async (req, res) => {
 
     // send response
     res.status(201).json({
-      username: user.username,
-      password: user.password,
-      user_id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
+      user,
       token,
     })
 

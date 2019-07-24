@@ -7,7 +7,6 @@ const cors = require('cors')
 // routes
 const registration = require('./registration')
 const user = require('./users')
-const upload = require('./upload')
 
 // init express
 const server = express()
@@ -19,9 +18,8 @@ server.use(cors()) // cross-domain request sharing CORS
 server.use(morgan('dev')) // debugging logger
 
 // use routes
-server.use('/api/registration', registration)
+server.use('/api/auth', registration)
 server.use('/api/user', user)
-server.use('/api/upload', upload)
 
 // index route display name
 server.get('/', (req, res) => {
