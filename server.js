@@ -23,7 +23,7 @@ server.use('/api/user', user)
 
 // index route display name
 server.get('/', (req, res) => {
-  res.status(200).json({ message: 'HELLO' })
+  res.status(200).json({ message: 'HELLO welcome to MOVIEDB-BACKEND🔥' })
 })
 
 module.exports = server
