@@ -2,8 +2,9 @@ const request = require('supertest')
 const bcrypt = require('bcrypt')
 const server = require('../server')
 const db = require('../data/dbConfig')
+
 // --------------- REGISTER ROUTE ----------------------
-describe('user registration', () => {
+describe('user auth', () => {
   afterEach(async () => {
     await db('users').truncate()
   })
@@ -12,16 +13,14 @@ describe('user registration', () => {
     jest.setTimeout(15000)
   })
 
+  // --------------- /register' ----------------------
   describe('register route', () => {
     it('should return a status code of 201 upon success', async (done) => {
       const response = await request(server)
-        .post('/api/registration/register')
+        .post('/api/auth/register')
         .send({
           username: 'username',
           password: 'password',
-          email: 'test@test.test',
-          firstname: 'test',
-          lastname: 'test',
         })
 
       expect(response.status).toBe(201)
@@ -31,31 +30,24 @@ describe('user registration', () => {
 
   it('should return a status code of 400 if body is invalid', async (done) => {
     const response = await request(server)
-      .post('/api/registration/register')
+      .post('/api/auth/register')
       .send({
         invalidNameExample: 'username',
         password: 'password',
-        email: 'test@test.test',
-        firstname: 'test',
-        lastname: 'test',
       })
 
     expect(response.status).toBe(400)
     done()
   })
 
-  it('should send back user name , id, and token if registration is successful', async () => {
+  it('should send back user name , id, and token if auth is successful', async () => {
     const response = await request(server)
-      .post('/api/registration/register')
+      .post('/api/auth/register')
       .send({
         username: 'username',
         password: 'password',
-        email: 'test@test.test',
-        firstname: 'test',
-        lastname: 'test',
       })
 
-    expect(response.body.user_id).not.toBe(null)
     expect(response.body.username).not.toBe(null)
     expect(response.body.token).not.toBe(null)
   })
@@ -65,40 +57,31 @@ describe('user registration', () => {
       .insert({
         username: 'username',
         password: 'password',
-        email: 'test@test.test',
-        firstname: 'test',
-        lastname: 'test',
       })
       .into('users')
 
     const response = await request(server)
-      .post('/api/registration/register')
+      .post('/api/auth/register')
       .send({
         username: 'username',
         password: 'password',
-        email: 'test@test.test',
-        firstname: 'test',
-        lastname: 'test',
       })
     expect(response.status).toBe(500)
   })
-  // --------------- LOGIN ROUTE ----------------------
+  // --------------- LOGIN ROUTE /login ----------------------
   describe('login route', () => {
     beforeEach(async () => {
       await db
         .insert({
           username: 'user2',
           password: bcrypt.hashSync('pass', 1),
-          email: '123123@whitehouse.gov',
-          firstname: 'test',
-          lastname: 'test',
         })
         .into('users')
     })
 
     it('should return status code of 200 upon success', async () => {
       const response = await request(server)
-        .post('/api/registration/login')
+        .post('/api/auth/login')
         .send({
           username: 'user2',
           password: 'pass',
@@ -109,7 +92,7 @@ describe('user registration', () => {
 
     it('should return status code of 400 if body is invalid', async () => {
       const response = await request(server)
-        .post('/api/registration/login')
+        .post('/api/auth/login')
         .send({
           usernaame: 'user2',
           password: 'pass',
@@ -120,7 +103,7 @@ describe('user registration', () => {
 
     it('should return status code of 401 if wrong credentials are entered', async () => {
       const response = await request(server)
-        .post('/api/registration/login')
+        .post('/api/auth/login')
         .send({
           username: 'user2',
           password: 'passsss',

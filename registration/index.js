@@ -6,9 +6,6 @@ const db = require('../data/dbConfig')
 
 const server = express.Router()
 
-// @route    /api/registration/register
-// @desc  Register NEW user
-// @Access   Public
 /* TODO
 1. validate user input
 2 hash password
@@ -18,6 +15,11 @@ const server = express.Router()
 6. reponse with new user and token
 7. handle erros
  */
+//-----------------------------------------------------------
+// @route    /api/auth/register
+// @desc     Register new User
+// @Access   Public
+//-----------------------------------------------------------
 server.post('/register', async (req, res) => {
   const { username } = req.body
   let { password } = req.body
@@ -63,9 +65,6 @@ server.post('/register', async (req, res) => {
   }
 })
 
-// @route    /api/registration/login
-// @desc     Login User
-// @Access   Public
 /* Things todo:
  1. validate user input
  2. Get user
@@ -76,6 +75,12 @@ server.post('/register', async (req, res) => {
  7 response with user and token data
  8 check for errors
  */
+
+//-----------------------------------------------------------
+// @route    /api/auth/login
+// @desc     Login User
+// @Access   Public
+//-----------------------------------------------------------
 server.post('/login', async (req, res) => {
   const { username, password } = req.body
   if (!username) {

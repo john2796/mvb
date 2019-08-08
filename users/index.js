@@ -84,6 +84,7 @@ server.delete('/', authenticate, async (req, res) => {
       .from('users')
       .where({ id })
 
+    // returnCurrent(id, res)
     res.status(200).json({ message: 'user deleted successfully' })
   } catch ({ message }) {
     res.status(500).json({ message })
