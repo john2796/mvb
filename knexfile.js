@@ -28,6 +28,7 @@ module.exports = {
       tableName: 'knex_migrations',
       directory: './data/migrations',
     },
+    
     useNullAsDefault: true,
   },
 }

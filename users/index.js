@@ -38,21 +38,33 @@ const returnCurrent = async (id, res) => {
     res.status(500).json({ message })
   }
 }
-// once you login and sent back token in the header for privates routes i will be able to decode those payload and use the id to find your account response with right data
+// once you login and sent back token in the header for privates routes i will be able to decode those payload and use the id to find your account response with right data\
+//-----------------------------------------------------------
+// @route    /api/user/current
+// @desc     Get current user
+// @Access   Public
+//-----------------------------------------------------------
 server.get('/current', authenticate, (req, res) => {
   const { id } = req.decoded.user
   returnCurrent(id, res)
 })
 
+//-----------------------------------------------------------
+// @route    /api/user
+// @desc     Update user detail
+// @Access   Public
+//-----------------------------------------------------------
 server.put('/', authenticate, multipart, async (req, res) => {
   const { username } = req.body
   const { id } = req.decoded.user
   try {
+    // upload image
     const { secure_url } = await uploadImage(req)
+    // update changes
     await db('users')
       .update({ avatar: secure_url, username })
       .where({ id })
-
+    // return updated changes with current user
     returnCurrent(id, res)
   } catch ({ message }) {
     res.status(500).json({ message })
@@ -66,7 +78,6 @@ server.put('/', authenticate, multipart, async (req, res) => {
 //-----------------------------------------------------------
 server.delete('/', authenticate, async (req, res) => {
   const { id } = req.decoded.user
-
   try {
     await db
       .delete()
