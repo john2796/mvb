@@ -12,8 +12,8 @@ const { authenticate } = require('../common/authentication')
 // ------------------------------------------------------------
 server.get('/All', async (req, res) => {
   try {
-    const user = await db.select().from('users')
-    res.status(200).json({ user })
+    const user = await db('users')
+    res.json({ user })
   } catch ({ message }) {
     res.status(500).json({ message })
   }
@@ -26,12 +26,10 @@ server.get('/All', async (req, res) => {
 // ------------------------------------------------------------
 const returnCurrent = async (id, res) => {
   try {
-    const user = await db
-      .select()
-      .from('users')
+    const user = await db('users')
       .where({ id })
       .first()
-    res.status(200).json({ user })
+    res.json({ user })
 
     // error handling
   } catch ({ message }) {
@@ -90,7 +88,5 @@ server.delete('/', authenticate, async (req, res) => {
     res.status(500).json({ message })
   }
 })
-
-
 
 module.exports = server
