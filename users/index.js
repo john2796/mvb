@@ -29,6 +29,8 @@ const returnCurrent = async (id, res) => {
     const user = await db('users')
       .where({ id })
       .first()
+
+
     res.json({ user })
 
     // error handling
@@ -83,7 +85,7 @@ server.delete('/', authenticate, async (req, res) => {
       .where({ id })
 
     // returnCurrent(id, res)
-    res.status(200).json({ message: 'user deleted successfully' })
+    res.json({ message: 'user deleted successfully' })
   } catch ({ message }) {
     res.status(500).json({ message })
   }
