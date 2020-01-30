@@ -13,7 +13,7 @@ const server = express()
 
 // middleware
 server.use(express.json()) // parse incoming request to json
-server.use(helmet()) // helps secure your express by setting http headers
+server.use(helmet()) // Helmet helps you secure your Express apps by setting various HTTP headers.
 server.use(cors()) // cross-domain request sharing CORS
 server.use(morgan('dev')) // debugging logger
 
